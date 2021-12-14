@@ -62,7 +62,7 @@ pipeline {
                 pip install -r requirements.txt
 
                 cd decide
-                ./manage.py test booth -v 2
+                ./manage.py test visualizer -v 2
                 '''
             }
         }
