@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
     'corsheaders',
     'django_filters',
@@ -56,6 +61,9 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     'base.backends.AuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 MODULES = [
@@ -150,6 +158,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+SITE_ID = 1
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
