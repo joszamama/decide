@@ -1,17 +1,34 @@
+from django.contrib import admin
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+
+from account.forms import UserForm
+
+from django.db import models
+from django.contrib.auth.models import User
+
+from django.contrib.auth import authenticate
+
 
 def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
+    form = UserForm()
+    if request.method == "POST":
+        form = UserForm(request.POST)
+            
+        username = request.POST['username']
+        password = request.POST['password']
+        if User.objects.filter(username=username).exists():
+            message = 'este nombre de usuario ha sido registrado'
+            return render(request, 'registration/signup.html', {"message": message, "form":form})
+        user = User()
+        user.username = username
+        user.set_password(password)
+        user.save()
+        return render(request,'registration/login.html',{"form":form})
     else:
-        form = UserCreationForm()
-    return render(request, 'registration/signup.html', {'form': form})
+        return render(request, 'registration/signup.html',{"form":form})
+
+
+def profile(request):
+    return render(request,'registration/profile.html')
