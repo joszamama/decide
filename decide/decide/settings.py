@@ -60,6 +60,7 @@ AUTHENTICATION_BACKENDS = [
 
 MODULES = [
     'authentication',
+    'account',
     'base',
     'booth',
     'census',
@@ -180,3 +181,4 @@ if os.path.exists("config.jsonnet"):
 
 
 INSTALLED_APPS = INSTALLED_APPS + MODULES
+

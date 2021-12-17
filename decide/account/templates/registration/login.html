@@ -11,10 +11,12 @@
     {% endif %}
 {% endif %}
 
-<form method="post" action="/account/profile">
+<form method="post">
 {% csrf_token %}
 
 <div>
+  <td>{{message}}</td>
+  <br>
   <td>{{ form.username.label_tag }}</td>
   <td>{{ form.username }}</td>
 </div>
@@ -28,6 +30,7 @@
   <input type="hidden" name="next" value="{{ next }}" />
 </div>
 </form>
+
 <form action="/account/signup/">
 {% csrf_token %}
     <div>
