@@ -11,10 +11,9 @@
 
 <form method="post">
 {% csrf_token %}
-
+<td>{{message}}</td>
+<br>
 <div>
-  <td>{{message}}</td>
-  <br>
   <td>{{ form.username.label_tag }}</td>
   <td>{{ form.username }}</td>
 </div>
