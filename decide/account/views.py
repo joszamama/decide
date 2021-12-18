@@ -27,7 +27,9 @@ def signup(request):
         user.username = username
         user.set_password(password)
         user.save()
-        return HttpResponseRedirect('/account/login', {'form':form})
+        if User.objects.filter(username=username).exists():
+            message = 'Se ha registrado correctamente. Puede Iniciar Sesión'
+            return render(request, 'registration/signup.html', {"message": message, "form":form})
     else:
         return render(request, 'registration/signup.html',{"form":form})
 

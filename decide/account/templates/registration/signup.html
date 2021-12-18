@@ -13,8 +13,16 @@
   </div>
   
   <div>
-    <input type="submit" value="Sign up"  />
+    <input type="submit" value="Registrarse"  />
     <input type="hidden" name="next" value="{{ next }}" />
   </div>
   </form>
+
+  <form action="/account/login/">
+    {% csrf_token %}
+        <div>
+            <input type="submit" value="Iniciar sesión"  />
+            <input type="hidden" name="next" value="{{ next }}" />
+          </div>
+    </form> 
 {% endblock %}
