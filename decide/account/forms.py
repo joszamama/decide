@@ -10,3 +10,14 @@ class UserForm(forms.ModelForm):
             # telling Django your password field in the mode is a password input on the template
             'password': forms.PasswordInput() 
         }
+
+
+class UpdateForm(forms.ModelForm):
+   class Meta:
+        model = User
+        fields = ['password']
+
+        widgets = {
+            # telling Django your password field in the mode is a password input on the template
+            'password': forms.PasswordInput()
+        }  

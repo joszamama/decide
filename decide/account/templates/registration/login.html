@@ -2,20 +2,12 @@
 
 
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
+<td>{{message}}</td>
 
 <form method="post">
 {% csrf_token %}
 
 <div>
-  <td>{{message}}</td>
   <br>
   <td>{{ form.username.label_tag }}</td>
   <td>{{ form.username }}</td>

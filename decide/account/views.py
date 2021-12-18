@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth import login, authenticate
-from django.http.response import HttpResponseRedirect
+from django.contrib.auth.signals import user_logged_in
+from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 
-from account.forms import UserForm
+from account.forms import UpdateForm, UserForm
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -27,7 +28,7 @@ def signup(request):
         user.username = username
         user.set_password(password)
         user.save()
-        return HttpResponseRedirect('/account/login', {'form':form})
+        return HttpResponseRedirect('/account/login')
     else:
         return render(request, 'registration/signup.html',{"form":form})
 
@@ -43,7 +44,7 @@ def view_login(request):
         user = authenticate(request,username=username, password=password) 
         if user is not None:
             login(request,user)
-            return HttpResponseRedirect('/account/profile',{'user':user})
+            return HttpResponseRedirect('/account/profile')
         else:
             message = 'Usuario o contraseña incorrecta'
             return render(request, 'registration/login.html', {'form': form, 'message':message})
@@ -53,3 +54,20 @@ def view_login(request):
 
 def profile(request):
     return render(request,'registration/profile.html')
+
+
+def updateUser(request):
+    
+    user = request.user
+    form = UpdateForm()
+    if request.method == "POST":
+        password = request.POST['password']
+        user.set_password(password)
+        user.save()
+        login(request,user)
+        message = "Contraseña cambiada correctamente"
+        return render(request,'registration/update.html',{"message":message,"form":form})
+        
+
+    else:
+        return render(request, 'registration/update.html',{"form":form})
