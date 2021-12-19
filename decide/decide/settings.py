@@ -56,6 +56,7 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     'base.backends.AuthBackend',
+    'account.backends.EmailAuthBackend'
 ]
 
 MODULES = [

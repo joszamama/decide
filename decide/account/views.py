@@ -31,16 +31,13 @@ def signup(request):
     else:
         return render(request, 'registration/signup.html',{"form":form})
 
-
-
-
 def view_login(request):
     form = UserForm()
     if request.method == "POST":
         form = UserForm(request.POST)
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password) 
+        user = authenticate(request, email=email, password=password) 
         if user is not None:
             login(request,user)
             return HttpResponseRedirect('/account/profile',{'user':user})
