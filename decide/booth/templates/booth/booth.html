@@ -51,14 +51,36 @@
 
             <!-- Voting -->
             <div v-if="!signup">
-                <h2>[[ voting.question.desc ]]</h2>
-                <b-form-group v-for="opt in voting.question.options" :key="opt.number">
-                    <b-form-radio v-model="selected"
-                                  :id="'q' + opt.number"
-                                  name="question"
-                                  :value="opt.number">
-                        [[ opt.option ]]
-                    </b-form-radio>
+                
+                <h2>[[ voting.desc ]]</h2>
+                <h2>[[ voting.question ]]</h2>
+                <h2 v-for="q in voting.question" :key="q.number"></h2>
+
+                <!-- <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>desc</th>
+                            <th>opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="q in voting.question" :key="q.number">
+                            <th>[[q.desc]]</th>
+                            <th>[[q.options]]</th>
+                        </tr>
+                        
+                    </tbody>
+                </table> -->
+                <b-form-group v-for="quest in voting.question" :key="quest.number">
+                    <h2>[[ quest.desc ]]</h2>
+                    <b-form-group v-for="opt in quest.options" :key="opt.number">
+                        <b-form-radio v-model="selected"
+                                    :id="'quest' + opt.number"
+                                    name="question"
+                                    :value="opt.number">
+                            [[ opt.option ]]
+                        </b-form-radio>
+                    </b-form-group>
                 </b-form-group>
                 <b-button type="button" variant="primary" v-on:click="decideSend">
                     {% trans "Vote" %}
