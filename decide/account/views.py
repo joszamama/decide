@@ -10,38 +10,35 @@ from account.forms import UserForm
 from django.db import models
 from django.contrib.auth.models import User
 
-from django.contrib.auth import authenticate
-
-
 
 def signup(request):
     form = UserForm()
     if request.method == "POST":
         form = UserForm(request.POST)
-            
         username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        if User.objects.filter(username=username).exists():
-            message = 'este nombre de usuario ha sido registrado'
+        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
+            message = 'Este usuario ya ha sido registrado'
             return render(request, 'registration/signup.html', {"message": message, "form":form})
         user = User()
         user.username = username
+        user.email = email
         user.set_password(password)
         user.save()
-        return HttpResponseRedirect('/account/login')
+        if User.objects.filter(username=username).exists():
+            message = 'Se ha registrado correctamente. Puede Iniciar Sesión'
+            return render(request, 'registration/signup.html', {"message": message, "form":form})
     else:
         return render(request, 'registration/signup.html',{"form":form})
-
-
-
 
 def view_login(request):
     form = UserForm()
     if request.method == "POST":
         form = UserForm(request.POST)
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request,username=username, password=password) 
+        user = authenticate(request, email=email, password=password) 
         if user is not None:
             login(request,user)
             return HttpResponseRedirect('/account/profile')
