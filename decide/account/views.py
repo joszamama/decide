@@ -5,7 +5,7 @@ from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 
-from account.forms import UpdateForm, UserForm
+from account.forms import UserForm
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -59,13 +59,15 @@ def profile(request):
 def updateUser(request):
     
     user = request.user
-    form = UpdateForm()
+    form = UserForm()
     if request.method == "POST":
+        email = request.POST['email']
         password = request.POST['password']
+        user.email = email
         user.set_password(password)
         user.save()
         login(request,user)
-        message = "Contraseña cambiada correctamente"
+        message = "Datos cambiado correctamente"
         return render(request,'registration/update.html',{"message":message,"form":form})
         
 
