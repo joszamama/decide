@@ -90,7 +90,7 @@ MODULES = [
 
 BASEURL = 'http://localhost:8000'
 
-LOGIN_REDIRECT_URL = '/account/login/'
+LOGIN_REDIRECT_URL = '/account/profile/'
 LOGOUT_REDIRECT_URL = '/account/login/'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '31123710308-bia1sq79k8kl67dgj9msj8fq703m2qa8.apps.googleusercontent.com'

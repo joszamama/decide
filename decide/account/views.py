@@ -56,14 +56,14 @@ def profile(request):
 def updateUser(request):
     
     user = request.user
-    form = UserForm()
+    form = UserForm(instance = user)
     if request.method == "POST":
         email = request.POST['email']
         password = request.POST['password']
         user.email = email
         user.set_password(password)
         user.save()
-        login(request,user)
+        login(request,user, backend='django.contrib.auth.backends.ModelBackend')
         message = "Datos cambiado correctamente"
         return render(request,'registration/update.html',{"message":message,"form":form})
         

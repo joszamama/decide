@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseRedirect
 from rest_framework.response import Response
 from rest_framework.status import (
         HTTP_201_CREATED,
@@ -30,7 +31,7 @@ class LogoutView(APIView):
         except ObjectDoesNotExist:
             pass
 
-        return Response({})
+        return HttpResponseRedirect('/account/login')
 
 
 class RegisterView(APIView):
