@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import login, authenticate
-from django.http.response import HttpResponseRedirect
+from django.contrib.auth.signals import user_logged_in
+from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 
@@ -40,7 +41,7 @@ def view_login(request):
         user = authenticate(request, email=email, password=password) 
         if user is not None:
             login(request,user)
-            return HttpResponseRedirect('/account/profile',{'user':user})
+            return HttpResponseRedirect('/account/profile')
         else:
             message = 'Usuario o contraseña incorrecta'
             return render(request, 'registration/login.html', {'form': form, 'message':message})
@@ -50,3 +51,22 @@ def view_login(request):
 
 def profile(request):
     return render(request,'registration/profile.html')
+
+
+def updateUser(request):
+    
+    user = request.user
+    form = UserForm()
+    if request.method == "POST":
+        email = request.POST['email']
+        password = request.POST['password']
+        user.email = email
+        user.set_password(password)
+        user.save()
+        login(request,user)
+        message = "Datos cambiado correctamente"
+        return render(request,'registration/update.html',{"message":message,"form":form})
+        
+
+    else:
+        return render(request, 'registration/update.html',{"form":form})

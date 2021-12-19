@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,6 +28,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+BASEURL = 'https://decide-part-mulhacen.herokuapp.com'
+
+APIS = {
+    'authentication': BASEURL,
+    'base': BASEURL,
+    'booth': BASEURL,
+    'census': BASEURL,
+    'mixnet': BASEURL,
+    'postproc': BASEURL,
+    'store': BASEURL,
+    'visualizer': BASEURL,
+    'voting': BASEURL,
+}
 
 # Application definition
 
@@ -37,7 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'social_django',
     'corsheaders',
     'django_filters',
     'rest_framework',
@@ -55,6 +69,8 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
     'base.backends.AuthBackend',
     'account.backends.EmailAuthBackend'
 ]
@@ -73,6 +89,12 @@ MODULES = [
 ]
 
 BASEURL = 'http://localhost:8000'
+
+LOGIN_REDIRECT_URL = '/account/login/'
+LOGOUT_REDIRECT_URL = '/account/login/'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '31123710308-bia1sq79k8kl67dgj9msj8fq703m2qa8.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -183,3 +205,4 @@ if os.path.exists("config.jsonnet"):
 
 INSTALLED_APPS = INSTALLED_APPS + MODULES
 
+django_heroku.settings(locals())

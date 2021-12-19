@@ -1,5 +1,13 @@
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+  integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+  crossorigin="anonymous">
 {% block content %}
 <h2>Iniciar Sesión</h2>
+
+<td>{{message}}</td>
+
 <form method="post">
 {% csrf_token %}
 <td>{{message}}</td>
@@ -29,3 +37,11 @@
 
 
 {% endblock %}
+  {% if user.is_authenticated %}
+    <p>Logged as {{ user.username }}</p>
+    <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
+  {% else %}
+    <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
+      Login with Google
+    </a>
+  {% endif %}
