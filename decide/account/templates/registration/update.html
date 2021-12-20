@@ -21,17 +21,8 @@
     
     <div>
       <input type="submit" value="Actualizar"  />
-      <input type="hidden" name="next" value="{{ next }}" />
+      <input type="hidden" name="next" value={{next}} />
     </div>
     </form>
-
-    <form action="/account/profile/">
-      {% csrf_token %}
-          <div>
-            
-              <input type="submit" value="Perfil"  />
-              <input type="hidden" name="next" value="{{ next }}" />
-            </div>
-      </form> 
 
     {% endblock %}
