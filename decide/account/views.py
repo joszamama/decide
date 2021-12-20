@@ -58,14 +58,18 @@ def updateUser(request):
     user = request.user
     form = UserForm(instance = user)
     if request.method == "POST":
+        emailActual = user.email
         email = request.POST['email']
         password = request.POST['password']
+        if User.objects.filter(email=email).exists() and email!=emailActual:
+            message = 'Este correo ya existe en la BD'
+            return render(request, 'registration/update.html', {"message": message, "form":form})
+        
         user.email = email
         user.set_password(password)
         user.save()
         login(request,user, backend='django.contrib.auth.backends.ModelBackend')
-        message = "Datos cambiado correctamente"
-        return render(request,'registration/update.html',{"message":message,"form":form})
+        return render(request,'registration/profile.html',{"form":form})
         
 
     else:
