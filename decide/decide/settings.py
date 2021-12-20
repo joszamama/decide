@@ -93,7 +93,7 @@ MODULES = [
     'voting',
 ]
 
-BASEURL = 'https://localhost:8000'
+BASEURL = 'http://localhost:8000'
 
 LOGIN_REDIRECT_URL = '/account/profile/'
 LOGOUT_REDIRECT_URL = '/account/login/'
