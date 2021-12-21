@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,6 +28,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+BASEURL = 'https://decide-part-mulhacen.herokuapp.com'
+
+APIS = {
+    'authentication': BASEURL,
+    'base': BASEURL,
+    'booth': BASEURL,
+    'census': BASEURL,
+    'mixnet': BASEURL,
+    'postproc': BASEURL,
+    'store': BASEURL,
+    'visualizer': BASEURL,
+    'voting': BASEURL,
+}
 
 # Application definition
 
@@ -37,13 +51,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'social_django',
     'corsheaders',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
     'gateway',
+    'sslserver'
 ]
 
 REST_FRAMEWORK = {
@@ -55,11 +70,19 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.facebook.FacebookAppOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.twitch.TwitchOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
     'base.backends.AuthBackend',
+    'account.backends.EmailAuthBackend'
 ]
 
 MODULES = [
     'authentication',
+    'account',
     'base',
     'booth',
     'census',
@@ -71,6 +94,29 @@ MODULES = [
 ]
 
 BASEURL = 'http://localhost:8000'
+
+LOGIN_REDIRECT_URL = '/account/profile/'
+LOGOUT_REDIRECT_URL = '/account/login/'
+
+#OAuth keys
+#--Google
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '31123710308-bia1sq79k8kl67dgj9msj8fq703m2qa8.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+#--TWitter
+SOCIAL_AUTH_TWITTER_KEY = '6eUU1EwV2VbCeqe1f2NHXVAMv'
+SOCIAL_AUTH_TWITTER_SECRET = 'S6SLBcdpSOltefbep666CSoM3Dj9HO4lMvDWmgXr7dVmeDfv17'
+#--Facebook
+SOCIAL_AUTH_FACEBOOK_KEY = '1284201065427824'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'a5dc475f0188dee4bd6a51c071a4ad15'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+  'locale': 'es_ES',
+  'fields': 'id, name, email, age_range'
+}
+#--Twitch
+SOCIAL_AUTH_TWITCH_KEY = 'cnzikexjmbrwp0zeiwtktrp3amxcvf'
+SOCIAL_AUTH_TWITCH_SECRET = 'qog0969xcd2e9jegv30euycs6n9pdm'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -180,3 +226,5 @@ if os.path.exists("config.jsonnet"):
 
 
 INSTALLED_APPS = INSTALLED_APPS + MODULES
+
+django_heroku.settings(locals())
