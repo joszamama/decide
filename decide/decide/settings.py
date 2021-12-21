@@ -39,6 +39,7 @@ APIS = {
     'store': BASEURL,
     'visualizer': BASEURL,
     'voting': BASEURL,
+    'account': BASEURL,
 }
 
 INSTALLED_APPS = [
