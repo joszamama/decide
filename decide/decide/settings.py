@@ -27,6 +27,19 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+BASEURL = 'https://decide-part-mulhacen.herokuapp.com'
+
+APIS = {
+    'authentication': BASEURL,
+    'base': BASEURL,
+    'booth': BASEURL,
+    'census': BASEURL,
+    'mixnet': BASEURL,
+    'postproc': BASEURL,
+    'store': BASEURL,
+    'visualizer': BASEURL,
+    'voting': BASEURL,
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -76,20 +89,6 @@ MODULES = [
     'visualizer',
     'voting',
 ]
-
-BASEURL = 'https://decide-part-mulhacen.herokuapp.com/'
-
-APIS = {
-    'authentication': BASEURL,
-    'base': BASEURL,
-    'booth': BASEURL,
-    'census': BASEURL,
-    'mixnet': BASEURL,
-    'postproc': BASEURL,
-    'store': BASEURL,
-    'visualizer': BASEURL,
-    'voting': BASEURL,
-}
 
 LOGIN_REDIRECT_URL = '/account/profile/'
 LOGOUT_REDIRECT_URL = '/account/login/'
