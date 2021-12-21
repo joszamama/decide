@@ -1,0 +1,53 @@
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+  integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+  crossorigin="anonymous">
+{% block content %}
+<h2>Iniciar Sesión</h2>
+
+<td>{{message}}</td>
+
+<form method="post">
+{% csrf_token %}
+<br>
+<div>
+  <td>{{form.email.label_tag}}</td>
+  <td>{{ form.email }}</td>
+</div>
+<div>
+  <td>{{ form.password.label_tag }}</td>
+  <td>{{ form.password }}</td>
+</div>
+
+<div>
+  <input type="submit" value="Iniciar sesión"  />
+  <input type="hidden" name="next" value="{{ next }}" />
+</div>
+</form>
+
+<form action="/account/signup/">
+{% csrf_token %}
+    <div>
+        <input type="submit" value="Registrarse"  />
+        <input type="hidden" name="next" value="{{ next }}" />
+      </div>
+</form> 
+
+
+{% endblock %}
+    <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
+      Login with Google
+    </a>
+
+    <a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">
+      Login with Twitter
+    </a>
+
+    <a class="btn btn-primary" href="{% url 'social:begin' 'twitch' %}">
+      Login with Twitch
+    </a>
+
+    <a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">
+      Login with Facebook
+    </a>
