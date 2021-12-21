@@ -51,10 +51,8 @@
 
             <!-- Voting -->
             <div v-if="!signup">
-                <h2>[[ voting.desc ]]</h2>
-                
-                <div v-if="!voting.preferencia">
-                 <b-form-group v-for="opt in voting.question.options" :key="opt.number">
+                <h2>[[ voting.question.desc ]]</h2>
+                <b-form-group v-for="opt in voting.question.options" :key="opt.number">
                     <b-form-radio v-model="selected"
                                   :id="'q' + opt.number"
                                   name="question"
@@ -65,28 +63,6 @@
                 <b-button type="button" variant="primary" v-on:click="decideSend">
                     {% trans "Vote" %}
                 </b-button>
-                
-                </div> 
-                
-                <div v-if="voting.preferencia">
-
-
-                <b-form-group v-for="opt in voting.question.options" :key="opt.number">
-                    <form>
-                        <input type="number" name="options" min="1" max="3"  value="opt.number"> 
-                        [[ opt.option ]]
-                    </form>
-                
-
-              
-                
-                </div>  
-                <div v-if="voting.preferencia">
-                <b-button type="button" variant="primary" v-on:click="decideSend">
-                    {% trans "Vote" %}
-                </b-button> 
-                </div>
-                
             </div>
         </div>
     </div>
