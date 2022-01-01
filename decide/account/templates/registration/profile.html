@@ -7,7 +7,14 @@
 
 {% block content %}
 <div>
-<td>Si desea a la votacion {{id_votacion}} pulse aquí:</td>
+<td>{{message}}</td>
+<form action="/account/mivotacion">
+  {% csrf_token %}
+      <div>
+          <input type="submit" value = "Acceder" />
+          <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+  </form> 
 </div>
 
 </div>

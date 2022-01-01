@@ -38,7 +38,7 @@ def view_login(request):
         form = UserForm(request.POST)
         email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, email=email, password=password) 
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request,user)
             return HttpResponseRedirect('/account/profile')
@@ -48,13 +48,30 @@ def view_login(request):
     else:
         return render(request,'registration/login.html',{'form':form})
 
+def aux(request):
+    user = request.user
+    ls = Census.objects.filter(voter_id=user.id).values_list('voting_id')
+    if ls:
+        votaciones = ls.all()
+        v = list(votaciones[0])
+        return str(v[0])
+    else:
+        return None
 
 def profile(request):
-    user = request.user
-    votaciones = Census.objects.filter(voter_id=user.id).values_list('voting_id')
-    votacio = votaciones.all()
-    v = list(votacio[0])
-    return render(request,'registration/profile.html',{'id_votacion':str(v[0])})
+    vid = aux(request)
+    message1 = "No está censado en ninguna votación, no podrá acceder a votar"
+    message2 = "Si desea acceder a la votación pulse en Acceder"
+    if vid:
+        return render(request,'registration/profile.html',{'message':message2, 'id_votacion':vid})
+    else:
+        return render(request,'registration/profile.html',{'message':message1})
+
+
+def misvotaciones(request):
+    vid = aux(request)
+    return HttpResponseRedirect('/booth/'+vid)
+
 
 def updateUser(request):
     user = request.user
