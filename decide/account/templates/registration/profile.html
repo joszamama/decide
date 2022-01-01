@@ -4,12 +4,13 @@
   integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
   crossorigin="anonymous">
 
+
 {% block content %}
-    <h2>Prueba</h2>
-    <td>{{user.username}}</td>
-    <td>{{user.login}}</td>
-    <br>
-    <td>{{user.email}}</td>
+<div>
+<td>Si desea a la votacion {{id_votacion}} pulse aquí:</td>
+</div>
+
+</div>
     <form action="/account/update">
 
         {% csrf_token %}

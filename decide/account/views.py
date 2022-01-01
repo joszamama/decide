@@ -9,7 +9,7 @@ from account.forms import UserForm
 
 from django.db import models
 from django.contrib.auth.models import User
-
+from census.models import Census
 
 def signup(request):
     form = UserForm()
@@ -50,11 +50,13 @@ def view_login(request):
 
 
 def profile(request):
-    return render(request,'registration/profile.html')
-
+    user = request.user
+    votaciones = Census.objects.filter(voter_id=user.id).values_list('voting_id')
+    votacio = votaciones.all()
+    v = list(votacio[0])
+    return render(request,'registration/profile.html',{'id_votacion':str(v[0])})
 
 def updateUser(request):
-    
     user = request.user
     form = UserForm(instance = user)
     if request.method == "POST":
