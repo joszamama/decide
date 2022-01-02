@@ -1,23 +1,38 @@
-<link
-  rel="stylesheet"
-  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-  integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-  crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+  integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
-{% block content %}
-    <h2>Prueba</h2>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+<style type="text/css">
+  h1 {
+    color: white;
+    background-color: black;
+    text-align: center;
+    padding: 40px;
+  }
+
+</style>
+<h1>Mi cuenta</h1>
+<br><br>
+<div class="format">
+  <div class="form">
+    <span style="font-weight:bold">Username: </span>
+    <br>
     <td>{{user.username}}</td>
-    <td>{{user.login}}</td>
+    <br><br>
+    <span style="font-weight:bold">Email address: </span>
     <br>
     <td>{{user.email}}</td>
+    <br>
+    <br>
     <form action="/account/update">
+      {% csrf_token %}
+      <div>
+        <input type="submit" value="Actualizar datos" />
+        <input type="hidden" name="next" value="{{ next }}" />
+      </div>
+    </form>
+    <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a>
+  </div>
+</div>
 
-        {% csrf_token %}
-        
-            <div>
-                <input type="submit" value = "Actualizar datos" />
-                <input type="hidden" name="next" value="{{ next }}" />
-              </div>
-        </form> 
-{% endblock %}
-<a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
