@@ -1,28 +1,35 @@
-<link
-  rel="stylesheet"
-  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-  integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-  crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+  integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
-  {% block content %}
-<form method="post">
-    {% csrf_token %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+<style type="text/css">
+  h1 {
+    color: white;
+    background-color: black;
+    text-align: center;
+    padding: 40px;
+  }
 
-    <td>{{message}}</td>
-    
-    <div>
-      <td>{{ form.email.label_tag }}</td>
-      <td>{{ form.email }}</td>
-    </div>
-    <div>
+  h5 {
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+</style>
+<h1>Actualizar datos</h1>
+
+<h5>{{message}}</h5>
+
+<div class="format">
+  <div class="form">
+    <form class="login-form" method="post">
+      {% csrf_token %}
+      <td>{{form.email.label_tag}}</td>
+      <input type="text" placeholder="decide@us.es" name="email" />
       <td>{{ form.password.label_tag }}</td>
-      <td>{{ form.password }}</td>
-    </div>
-    
-    <div>
-      <input type="submit" value="Actualizar"  />
-      <input type="hidden" name="next" value={{next}} />
-    </div>
+      <input type="password" placeholder="password" name="password" />
+      <button>Actualizar</button>
     </form>
-
-    {% endblock %}
+  </div>
+</div>
