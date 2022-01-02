@@ -32,6 +32,7 @@ class Voting(models.Model):
     desc = models.TextField(blank=True, null=True)
     question = models.ManyToManyField(Question, related_name='votings')
 
+
     start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
 
@@ -98,20 +99,22 @@ class Voting(models.Model):
 
     def do_postproc(self):
         tally = self.tally
-        # for q in self.question:
-        options = self.question.options.all()
 
-        opts = []
-        for opt in options:
-            if isinstance(tally, list):
-                votes = tally.count(opt.number)
-            else:
-                votes = 0
-            opts.append({
-                'option': opt.option,
-                'number': opt.number,
-                'votes': votes
-            })
+        question = self.question.all()
+
+        for q in question:
+            options = q.options.all()
+            opts = []
+            for opt in options:
+                if isinstance(tally, list):
+                    votes = res.count(opt.number)
+                else:
+                    votes = 0
+                opts.append({
+                    'option': opt.option,
+                    'number': opt.number,
+                    'votes': votes
+                })
 
         data = { 'type': 'IDENTITY', 'options': opts }
         postp = mods.post('postproc', json=data)
