@@ -107,7 +107,7 @@ class Voting(models.Model):
             opts = []
             for opt in options:
                 if isinstance(tally, list):
-                    votes = res.count(opt.number)
+                    votes = tally.count(opt.number)
                 else:
                     votes = 0
                 opts.append({
