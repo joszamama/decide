@@ -12,5 +12,6 @@ jsonnet==0.12.1
 django-heroku
 gunicorn
 django-sslserver
+social-auth-app-django
 
 
