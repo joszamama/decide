@@ -230,7 +230,7 @@
                         uniqueSet = new Set();
                         uniqueSet = new Set(this.arrayPreferences);
                         if (uniqueSet.size!=this.arrayPreferences.length){
-                        this.errors.push('You must select all possible values');
+                        this.errors.push('You cannot select the same option several times');
                         }
                         evt.preventDefault(); 
                     }
