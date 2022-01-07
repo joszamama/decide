@@ -9,12 +9,20 @@ from base.models import Auth, Key
 
 class Question(models.Model):
     desc = models.TextField()
-    preferences = models.BooleanField(default=False,verbose_name="Preferences", help_text="Check for creating a preference question")
 
-    
+    preferences = models.BooleanField(default=False,verbose_name="Preferences", help_text="Check for creating a preference question")
+    sino = models.BooleanField(default=False, help_text="Marcala si quieres que las respuestas genericas sean Si/No. No añadir mas respuesta.")
 
     def __str__(self):
         return self.desc
+
+@receiver(post_save, sender=Question)
+def sino(sender, instance, **kwargs):
+    if instance.sino==True:
+        op1 = QuestionOption(question=instance, number=1, option="Si")
+        op1.save()
+        op2 = QuestionOption(question=instance, number=2, option="No") 
+        op2.save()
 
 
 class QuestionOption(models.Model): 
@@ -22,10 +30,15 @@ class QuestionOption(models.Model):
     number = models.PositiveIntegerField(blank=True, null=True) 
     option = models.TextField() 
 
-   
-    def save(self): 
-        if not self.number: 
-            self.number = self.question.options.count() + 2 
+
+
+    def save(self):
+        if not self.number:
+            self.number = self.question.options.count() + 2
+        return super().save()
+
+    def __str__(self):
+        return '{} ({})'.format(self.option, self.number)
 
         return super().save() 
         
@@ -99,19 +112,22 @@ class Voting(models.Model):
 
     def do_postproc(self):
         tally = self.tally
-        options = self.question.all()[0].options.all()
 
-        opts = []
-        for opt in options:
-            if isinstance(tally, list):
-                votes = tally.count(opt.number)
-            else:
-                votes = 0
-            opts.append({
-                'option': opt.option,
-                'number': opt.number,
-                'votes': votes
-            })
+        question = self.question.all()
+
+        for q in question:
+            options = q.options.all()
+            opts = []
+            for opt in options:
+                if isinstance(tally, list):
+                    votes = tally.count(opt.number)
+                else:
+                    votes = 0
+                opts.append({
+                    'option': opt.option,
+                    'number': opt.number,
+                    'votes': votes
+                })
 
         data = { 'type': 'IDENTITY', 'options': opts }
         postp = mods.post('postproc', json=data)

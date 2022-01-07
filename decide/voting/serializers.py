@@ -29,7 +29,7 @@ class VotingSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SimpleVotingSerializer(serializers.HyperlinkedModelSerializer):
-    question = QuestionSerializer(many=False)
+    question = QuestionSerializer(many=True)
 
     class Meta:
         model = Voting
