@@ -8,15 +8,25 @@ from base.models import Auth, Key
 
 class Question(models.Model):
     desc = models.TextField()
-
+    sino = models.BooleanField(default=False, help_text="Marcala si quieres que las respuestas genericas sean Si/No. No añadir mas respuesta.")
     def __str__(self):
         return self.desc
+
+@receiver(post_save, sender=Question)
+def sino(sender, instance, **kwargs):
+    if instance.sino==True:
+        op1 = QuestionOption(question=instance, number=1, option="Si")
+        op1.save()
+        op2 = QuestionOption(question=instance, number=2, option="No") 
+        op2.save()
 
 
 class QuestionOption(models.Model):
     question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
     number = models.PositiveIntegerField(blank=True, null=True)
     option = models.TextField()
+
+    
 
     def save(self):
         if not self.number:
