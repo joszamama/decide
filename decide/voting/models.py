@@ -2,13 +2,17 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
 from base import mods
 from base.models import Auth, Key
 
 class Question(models.Model):
     desc = models.TextField()
+
+    preferences = models.BooleanField(default=False,verbose_name="Preferences", help_text="Check for creating a preference question")
     sino = models.BooleanField(default=False, help_text="Marcala si quieres que las respuestas genericas sean Si/No. No añadir mas respuesta.")
+
     def __str__(self):
         return self.desc
 
@@ -21,12 +25,12 @@ def sino(sender, instance, **kwargs):
         op2.save()
 
 
-class QuestionOption(models.Model):
-    question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
-    number = models.PositiveIntegerField(blank=True, null=True)
-    option = models.TextField()
+class QuestionOption(models.Model): 
+    question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE) 
+    number = models.PositiveIntegerField(blank=True, null=True) 
+    option = models.TextField() 
 
-    
+
 
     def save(self):
         if not self.number:
@@ -36,12 +40,15 @@ class QuestionOption(models.Model):
     def __str__(self):
         return '{} ({})'.format(self.option, self.number)
 
+        return super().save() 
+        
+    def __str__(self): 
+        return '{} ({})'.format(self.option, self.number) 
 
 class Voting(models.Model):
     name = models.CharField(max_length=200)
     desc = models.TextField(blank=True, null=True)
     question = models.ManyToManyField(Question, related_name='votings')
-
 
     start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
@@ -74,10 +81,6 @@ class Voting(models.Model):
         return [[i['a'], i['b']] for i in votes]
 
     def tally_votes(self, token=''):
-        '''
-        The tally is a shuffle and then a decrypt
-        '''
-
         votes = self.get_votes(token)
 
         auth = self.auths.first()

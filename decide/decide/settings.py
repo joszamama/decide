@@ -109,9 +109,9 @@ WSGI_APPLICATION = 'decide.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'decide',
-        'USER': 'decide',
-        'PASSWORD': 'decide',
+        'NAME': 'decide3',
+        'USER': 'decide3',
+        'PASSWORD': 'decide3',
         'HOST': 'localhost',
         'PORT': '5432',
     }
