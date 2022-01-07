@@ -5,7 +5,7 @@
 
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
-{% block content %}
+
 <style type="text/css">
   h1 {
     color: white;
@@ -13,33 +13,28 @@
     text-align: center;
     padding: 40px;
   }
-
 </style>
 <h1>Mi cuenta</h1>
 <br><br>
 <div class="format">
   <div class="form">
-    
-<div>
-<td>{{message}}</td>
-<form action="/account/mivotacion">
-  {% csrf_token %}
-      <div>
-          <input type="submit" value = "Acceder" />
+  <div>
+  <td>{{message}}</td>
+      <form action="/account/mivotacion">
+          {% csrf_token %}
+          <div>
+              <input type="submit" value = "Acceder" />
+              <input type="hidden" name="next" value="{{ next }}" />
+            </div>
+      </form> 
+  
+      <form action="/account/update">
+        {% csrf_token %}
+        <div>
+          <input type="submit" value="Actualizar datos" />
           <input type="hidden" name="next" value="{{ next }}" />
         </div>
-  </form> 
-</div>
-
-</div>
-    <form action="/account/update">
-      {% csrf_token %}
-      <div>
-        <input type="submit" value="Actualizar datos" />
-        <input type="hidden" name="next" value="{{ next }}" />
-      </div>
-    </form>
-    <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a>
+      </form>
+      <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a>
   </div>
 </div>
-
