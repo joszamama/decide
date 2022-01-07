@@ -12,70 +12,59 @@ from base import mods
 from base.tests import BaseTestCase
 from account import views
 from account.forms import UserForm
+
 import requests
 import sys
+import time
+from django.test import LiveServerTestCase
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
-class AccountTestCase(BaseTestCase):
+class RegisterTestSelenium(LiveServerTestCase):
+    def test_add_user(self):
+        selenium = webdriver.Chrome()
+        selenium.get('http://localhost:8000/account/signup/')
 
-    # def test_add_user_empty(self):
-    #     usuarios = User.objects.count()
-    #     user = User()
-    #     user.username = 'prueba'
-    #     user.email = 'prueba'
-    #     user.set_password('prueba')
-    #     user.save()
-    #     self.assertEqual(usuarios, User.objects.count() - 1)
+        userUser = selenium.find_element_by_name('username')
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
 
-    # def setUp(self):
-    #     usuarios = User.objects.count()
-    #     user = User()
-    #     user.username = 'prueba'
-    #     user.email = 'prueba'
-    #     user.set_password('prueba')
-    #     user.save()
+        userUser.send_keys('l')
+        userEmail.send_keys('l@gmail.com')
+        userPass.send_keys('l',Keys.ENTER)
 
-    # def tearDown(self):
-    #     self.client = None
+        time.sleep(5)
 
-    def test_add_user_empty(self):
-        usuarios = User.objects.count()
-        # form_data = {'email': '', 'password': ''}
-        # resp = requests.post('http://localhost:8000/account/login/', cookie=csrftoken, data=form_data)
-        # self.assertEqual(resp.status_code, 400)
-        URL = 'http://localhost:8000/account/signup/'
+        assert 'correctamente' in selenium.page_source
+    
+    def test_add_user_registered(self):
+        selenium = webdriver.Chrome()
+        selenium.get('http://localhost:8000/account/signup/')
 
-        client = requests.session()
+        userUser = selenium.find_element_by_name('username')
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
 
-        # Retrieve the CSRF token first
-        client.get(URL)  # sets cookie
-        if 'csrftoken' in client.cookies:
-            # Django 1.6 and up
-            csrftoken = client.cookies['csrftoken']
-        else:
-            # older versions
-            csrftoken = client.cookies['csrf']
+        userUser.send_keys('l')
+        userEmail.send_keys('l@gmail.com')
+        userPass.send_keys('l',Keys.ENTER)
 
-        data = dict(username='prueba', email='prueba@gmail.com', password='p', csrfmiddlewaretoken=csrftoken, next='/')
-        r = client.post(URL, data=data, headers=dict(Referer=URL))
-        self.assertEqual(usuarios, User.objects.count())
+        time.sleep(5)
 
+        assert 'ya ha sido registrado' in selenium.page_source
+
+class LoginTestUnit(BaseTestCase):
     def test_login(self):
-        # form_data = {'email': '', 'password': ''}
-        # resp = requests.post('http://localhost:8000/account/login/', cookie=csrftoken, data=form_data)
-        # self.assertEqual(resp.status_code, 400)
         URL = 'http://localhost:8000/account/login/'
 
         client = requests.session()
 
-        # Retrieve the CSRF token first
-        client.get(URL)  # sets cookie
+        client.get(URL)  
         if 'csrftoken' in client.cookies:
-            # Django 1.6 and up
             csrftoken = client.cookies['csrftoken']
         else:
-            # older versions
             csrftoken = client.cookies['csrf']
 
-        login_data = dict(email='ja@gmail.com', password='ja', csrfmiddlewaretoken=csrftoken, next='/')
+        login_data = dict(email='l@gmail.com', password='l', csrfmiddlewaretoken=csrftoken, next='/')
         r = client.post(URL, data=login_data, headers=dict(Referer=URL))
         self.assertEqual(r.status_code, 200)
