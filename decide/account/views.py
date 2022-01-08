@@ -9,7 +9,7 @@ from account.forms import UserForm
 
 from django.db import models
 from django.contrib.auth.models import User
-
+from census.models import Census
 
 def signup(request):
     form = UserForm()
@@ -38,7 +38,7 @@ def view_login(request):
         form = UserForm(request.POST)
         email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, email=email, password=password) 
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request,user)
             return HttpResponseRedirect('/account/profile')
@@ -48,13 +48,32 @@ def view_login(request):
     else:
         return render(request,'registration/login.html',{'form':form})
 
+def aux(request):
+    user = request.user
+    ls = Census.objects.filter(voter_id=user.id).values_list('voting_id')
+    if ls:
+        votaciones = ls.all()
+        v = list(votaciones[0])
+        return str(v[0])
+    else:
+        return None
 
 def profile(request):
-    return render(request,'registration/profile.html')
+    vid = aux(request)
+    message1 = "No está censado en ninguna votación, no podrá acceder a votar"
+    message2 = "Si desea acceder a la votación pulse en Acceder"
+    if vid:
+        return render(request,'registration/profile.html',{'message':message2, 'id_votacion':vid})
+    else:
+        return render(request,'registration/profile.html',{'message':message1})
+
+
+def misvotaciones(request):
+    vid = aux(request)
+    return HttpResponseRedirect('/booth/'+vid)
 
 
 def updateUser(request):
-    
     user = request.user
     form = UserForm(instance = user)
     if request.method == "POST":
