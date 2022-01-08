@@ -3,6 +3,7 @@
 
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+
 <style type="text/css">
   h1 {
     color: white;
@@ -22,6 +23,7 @@
 <br><br>
 <div class="format">
   <div class="form">
+
     <span style="font-weight:bold">Username: </span>
     <br>
     <td>{{user.username}}</td>
@@ -69,5 +71,4 @@
     <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a>
   </div>
 </div>
-
 

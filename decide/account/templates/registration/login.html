@@ -32,22 +32,22 @@
       <button>Login</button>
     </form>
 
-    <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
+    <a class="btn btn-primary" name="googleButton" href="{% url 'social:begin' 'google-oauth2' %}">
       Login with Google
     </a>
     <br>
     <br>
-    <a class="btn btn-primary" href="{% url 'social:begin' 'twitter' %}">
+    <a class="btn btn-primary" name="twitterButton" href="{% url 'social:begin' 'twitter' %}">
       Login with Twitter
     </a>
     <br>
     <br>
-    <a class="btn btn-primary" href="{% url 'social:begin' 'twitch' %}">
+    <a class="btn btn-primary" name="twitchButton" href="{% url 'social:begin' 'twitch' %}">
       Login with Twitch
     </a>
     <br>
     <br>
-    <a class="btn btn-primary" href="{% url 'social:begin' 'facebook' %}">
+    <a class="btn btn-primary" name="facebookButton" href="{% url 'social:begin' 'facebook' %}">
       Login with Facebook
     </a>
     <br>
