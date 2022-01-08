@@ -54,7 +54,7 @@ def aux(request):
     if ls:
         votaciones = ls.all()
         v = list(votaciones[0])
-        return str(v[0])
+        return str(v)
     else:
         return None
 
@@ -63,9 +63,9 @@ def profile(request):
     message1 = "No está censado en ninguna votación, no podrá acceder a votar"
     message2 = "Si desea acceder a la votación pulse en Acceder"
     if vid:
-        return render(request,'registration/profile.html',{'message':message2, 'id_votacion':vid})
+        return render(request,'registration/profile.html',{'message2':message2, 'id_votacion':vid})
     else:
-        return render(request,'registration/profile.html',{'message':message1})
+        return render(request,'registration/profile.html',{'message1':message1})
 
 
 def misvotaciones(request):

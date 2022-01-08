@@ -1,11 +1,8 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
   integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
-
-
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
-{% block content %}
 <style type="text/css">
   h1 {
     color: white;
@@ -19,19 +16,36 @@
 <br><br>
 <div class="format">
   <div class="form">
-    
-<div>
-<td>{{message}}</td>
-<form action="/account/mivotacion">
-  {% csrf_token %}
+    <span style="font-weight:bold">Username: </span>
+    <br>
+    <td>{{user.username}}</td>
+    <br><br>
+    <span style="font-weight:bold">Email address: </span>
+    <br>
+    <td>{{user.email}}</td>
+    <br>
+    <br>
+
+    {% if message2 %}
+
+
+    <td>{{message2}}</td>
+    <form action="/account/mivotacion">
+      {% csrf_token %}
       <div>
           <input type="submit" value = "Acceder" />
           <input type="hidden" name="next" value="{{ next }}" />
         </div>
-  </form> 
-</div>
+    </form> 
 
-</div>
+    {% else %}
+    <td>{{message1}}</td>
+
+    {% endif %}
+    <br>
+    <br>
+
+
     <form action="/account/update">
       {% csrf_token %}
       <div>
@@ -42,4 +56,5 @@
     <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a>
   </div>
 </div>
+
 
