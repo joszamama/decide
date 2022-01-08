@@ -26,10 +26,14 @@
     <form class="login-form" method="post">
       {% csrf_token %}
       <td>{{form.email.label_tag}}</td>
-      <input type="text" placeholder="decide@us.es" name="email" />
+      <td>{{form.email}}</td>
       <td>{{ form.password.label_tag }}</td>
-      <input type="password" placeholder="password" name="password" />
+      <td>{{form.password}}</td>
       <button>Actualizar</button>
+    </form>
+    <form class="login-form" action = "/account/profile">
+      {% csrf_token %}
+      <button>Perfil</button>
     </form>
   </div>
 </div>
