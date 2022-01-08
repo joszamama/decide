@@ -80,6 +80,7 @@ def misvotaciones(request):
 
 
 def updateUser(request):
+    
     user = request.user
     form = UserForm(instance = user)
     if request.method == "POST":
@@ -94,7 +95,8 @@ def updateUser(request):
         user.set_password(password)
         user.save()
         login(request,user, backend='django.contrib.auth.backends.ModelBackend')
-        return render(request,'registration/profile.html',{"form":form})
+        message = 'Datos cambiados correctamente, puede volver al perfil'
+        return render(request,'registration/update.html',{"form":form, "message": message})
         
 
     else:
