@@ -11,6 +11,8 @@ BASEURL = 'http://localhost:8000/account/login/' #Introducir URL del login
 
 PROFILE_WEB = 'https://localhost:8000/account/profile/' #Introducir URL de login correcto
 
+UPDATE_WEB = 'https://localhost:8000/account/update/'
+
 #Variables para LoginRSTestSelenium
 USER_TWITCH = '' #Introducir usuario de Twitch para las pruebas
 PASSWORD_TWITCH = '' #Introducir contraseña de Twitch para las pruebas
@@ -280,5 +282,90 @@ class RegistroTestSelenium(LiveServerTestCase):
         userEmail.send_keys('prueba@gmail.com')
         userPass.send_keys('p',Keys.ENTER)
 
+class UpdateTestSelenium(LiveServerTestCase):
+    def test_update_user(self):
+        selenium = webdriver.Chrome()
+        selenium.get(BASEURL)
+       
+        acceptButton=selenium.find_element_by_id('details-button')
+        acceptButton.click()
+        time.sleep(2)
+            
+        goButton=selenium.find_element_by_id('proceed-link')
+        goButton.click()
+        time.sleep(2)
+        
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
+        userEmail.send_keys('danirc2001@gmail.com')
+        userPass.send_keys('aa',Keys.ENTER)
+        
+        
+        selenium.get(UPDATE_WEB)
+        userPass = selenium.find_element_by_name('password')
+
+        userPass.send_keys('aa',Keys.ENTER)
+
         time.sleep(5)
-        assert 'No' in selenium.page_source
+        assert 'cambiados correctamente' in selenium.page_source
+
+        
+    
+    def test_update_user_exist(self):
+        selenium = webdriver.Chrome()
+        selenium.get(BASEURL)
+
+        acceptButton=selenium.find_element_by_id('details-button')
+        acceptButton.click()
+        time.sleep(2)
+            
+        goButton=selenium.find_element_by_id('proceed-link')
+        goButton.click()
+        time.sleep(2)
+        
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
+
+        userEmail.send_keys('danirc2001@gmail.com')
+        userPass.send_keys('aa',Keys.ENTER)
+        
+        
+        selenium.get(UPDATE_WEB)
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
+
+        userEmail.clear()
+
+        userEmail.send_keys('danirc2000@gmail.com')
+        userPass.send_keys('aa',Keys.ENTER)
+
+        time.sleep(5)
+
+        assert 'ya existe en la BD' in selenium.page_source
+
+
+    def test_update_user_field_empty(self):
+        selenium = webdriver.Chrome()
+        selenium.get(BASEURL)
+       
+        acceptButton=selenium.find_element_by_id('details-button')
+        acceptButton.click()
+        time.sleep(2)
+            
+        goButton=selenium.find_element_by_id('proceed-link')
+        goButton.click()
+        time.sleep(2)
+        
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
+        userEmail.send_keys('danirc2001@gmail.com')
+        userPass.send_keys('aa',Keys.ENTER)
+        
+        
+        selenium.get(UPDATE_WEB)
+        userPass = selenium.find_element_by_name('password')
+
+        userPass.send_keys('',Keys.ENTER)
+
+        time.sleep(5)
+        assert '' in selenium.page_source
