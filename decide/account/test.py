@@ -5,21 +5,23 @@ from selenium.webdriver.common.keys import Keys
 from django.contrib.auth.models import User
 from base.tests import BaseTestCase
 
+BASEURL = 'https://localhost:8000/account/login/'
+
+PROFILE_WEB = 'https://localhost:8000/account/profile/'
+
 class LoginTestSelenium(LiveServerTestCase):
-
-      def createUserInDB(self):
-            user = User()
-            user.username = 'Prueba2k22'
-            user.email = 'prueba2k22@gmail.com'
-            user.set_password('prueba')
-            user.save()
-
 
       def testLogin(self):
             selenium = webdriver.Chrome()
-            selenium.get('http://localhost:8000/account/login/')
+            selenium.get(BASEURL)
 
-            time.sleep(5)
+            acceptButton=selenium.find_element_by_id('details-button')
+            acceptButton.click()
+            time.sleep(2)
+            
+            goButton=selenium.find_element_by_id('proceed-link')
+            goButton.click()
+            time.sleep(3)
       
             userEmail = selenium.find_element_by_name('email')
             userPass = selenium.find_element_by_name('password')
@@ -29,14 +31,20 @@ class LoginTestSelenium(LiveServerTestCase):
 
             time.sleep(5)
 
-            assert 'prueba2k22@gmail.com' in selenium.page_source
+            assert ('prueba2k22@gmail.com' in selenium.page_source) and (PROFILE_WEB in selenium.current_url)
 
    
       def testLoginWithWrongPassword(self):
             selenium = webdriver.Chrome()
-            selenium.get('http://localhost:8000/account/login/')
+            selenium.get(BASEURL)
 
-            time.sleep(5)
+            acceptButton=selenium.find_element_by_id('details-button')
+            acceptButton.click()
+            time.sleep(2)
+            
+            goButton=selenium.find_element_by_id('proceed-link')
+            goButton.click()
+            time.sleep(3)
 
             userEmail = selenium.find_element_by_name('email')
             userPass = selenium.find_element_by_name('password')
@@ -46,30 +54,20 @@ class LoginTestSelenium(LiveServerTestCase):
 
             time.sleep(5)
 
-            assert 'Usuario o contraseña incorrecta' in selenium.page_source
+            assert ('Usuario o contraseña incorrecta' in selenium.page_source)and (BASEURL in selenium.current_url)
 
-  
-      def testLoginWithoutRegister(self):
-            selenium = webdriver.Chrome()
-            selenium.get('http://localhost:8000/account/login/')
-
-            time.sleep(5)
-      
-            userEmail = selenium.find_element_by_name('email')
-            userPass = selenium.find_element_by_name('password')
-
-            userEmail.send_keys('usuarioNoRegistrado@gmail.com')
-            userPass.send_keys('1234',Keys.ENTER)
-
-            time.sleep(5)
-
-            assert 'account/login' in selenium.current_url
 
       def testLoginWithNoFields(self):
             selenium = webdriver.Chrome()
-            selenium.get('http://localhost:8000/account/login/')
+            selenium.get(BASEURL)
 
-            time.sleep(5)
+            acceptButton=selenium.find_element_by_id('details-button')
+            acceptButton.click()
+            time.sleep(2)
+            
+            goButton=selenium.find_element_by_id('proceed-link')
+            goButton.click()
+            time.sleep(3)
       
             userEmail = selenium.find_element_by_name('email')
             userPass = selenium.find_element_by_name('password')
@@ -79,4 +77,4 @@ class LoginTestSelenium(LiveServerTestCase):
 
             time.sleep(5)
 
-            assert 'account/login' in selenium.current_url
+            assert BASEURL in selenium.current_url
