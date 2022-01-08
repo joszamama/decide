@@ -1,8 +1,6 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
   integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
-
-
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
 
@@ -13,28 +11,64 @@
     text-align: center;
     padding: 40px;
   }
+
+  .fcc-btn {
+  background-color:   #17202a ;
+  color: white;
+  text-decoration: none;
+}
+
 </style>
 <h1>Mi cuenta</h1>
 <br><br>
 <div class="format">
   <div class="form">
-  <div>
-  <td>{{message}}</td>
-      <form action="/account/mivotacion">
-          {% csrf_token %}
-          <div>
-              <input type="submit" value = "Acceder" />
-              <input type="hidden" name="next" value="{{ next }}" />
-            </div>
-      </form> 
-  
-      <form action="/account/update">
-        {% csrf_token %}
+
+    <span style="font-weight:bold">Username: </span>
+    <br>
+    <td>{{user.username}}</td>
+    <br><br>
+    <span style="font-weight:bold">Email address: </span>
+    <br>
+    <td>{{user.email}}</td>
+    <br>
+    <br>
+
+    {% if message2 %}
+    <td>{{message2}}</td>
         <div>
-          <input type="submit" value="Actualizar datos" />
-          <input type="hidden" name="next" value="{{ next }}" />
+          <input type="button" class="button_active" onclick="location.href='/account/mivotacion?parametro={{v1}}';" name="acceder" value="Acceder"/>
         </div>
-      </form>
-      <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a>
+    {% for v in votacion %} 
+        <tr>
+          {% csrf_token %}
+        <div>
+          <input type="button" class="button_active" onclick="location.href='/account/mivotacion?parametro={{v}}';" value="Acceder"/>
+        </div>
+      </form> 
+      <br>
+      <br>
+      </tr>
+      {% endfor %}
+      
+  
+
+    {% else %}
+    <td>{{message1}}</td>
+
+    {% endif %}
+    <br>
+    <br>
+
+
+    <form action="/account/update">
+      {% csrf_token %}
+      <div>
+        <input type="submit" value="Actualizar datos" />
+        <input type="hidden" name="next" value="{{ next }}" />
+      </div>
+    </form>
+    <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar sesión</a>
   </div>
 </div>
+

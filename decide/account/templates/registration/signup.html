@@ -26,11 +26,11 @@
     <form class="login-form" method="post">
       {% csrf_token %}
       <td>{{ form.username.label_tag }}</td>
-      <input type="text" placeholder="decide" name="username" />
+      <input type="text" placeholder="decide" name="username" required/>
       <td>{{form.email.label_tag}}</td>
-      <input type="text" placeholder="decide@us.es" name="email" />
+      <input type="email" placeholder="decide@us.es" name="email" required/>
       <td>{{ form.password.label_tag }}</td>
-      <input type="password" placeholder="password" name="password" />
+      <input type="password" placeholder="password" name="password" minlength="8" required/>
       <button>Registrarse</button>
     </form>
 
