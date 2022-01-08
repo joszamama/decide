@@ -17,35 +17,6 @@ from voting.models import Voting, Question, QuestionOption
 
 
 class VotingModelTestCase(BaseTestCase): 
-    def setUp(self):
-       
-       q = Question(desc='Descripcion')
-       q.save()
-       
-       opt1 = QuestionOption(question=q, option='opcion 1')
-       opt1.save()
-       opt1 = QuestionOption(question=q, option='opcion 2')
-       opt1.save()
-
-       self.v = Voting(name='Votacion', question=q)
-       self.v.save()
-       super().setUp()
-
-    def tearDown(self):
-       super().tearDown()
-       self.v = None   
-
-    def testExist(self):
-       v=Voting.objects.get(name='Votacion')
-       self.assertEquals(v.question.options.all()[0].option, "opcion 1")   
-
-
-class VotingTestCase(BaseTestCase):
-    def test_Voting_toString(self):
-        v = self.create_voting()
-        self.assertEquals(str(v),"test voting")
-        self.assertEquals(str(v.question),"test question")
-        self.assertEquals(str(v.question.options.all()[0]),"option 1 (2)")
 
     def setUp(self):
         super().setUp()
@@ -61,20 +32,27 @@ class VotingTestCase(BaseTestCase):
         return k.encrypt(msg)
 
     def create_voting(self):
-        q = Question(desc='test question')
+        q = Question(desc='test question', sino=False, preferences=False)
         q.save()
         for i in range(5):
             opt = QuestionOption(question=q, option='option {}'.format(i+1))
             opt.save()
-        v = Voting(name='test voting', question=q)
+        v = Voting(name='test voting')
         v.save()
-
+        v.question.add(q)
         a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
                                           defaults={'me': True, 'name': 'test auth'})
         a.save()
         v.auths.add(a)
-
         return v
+
+    def create_question(self):
+        q = Question(desc='test question', sino='False', preferences='False')
+        q.save()
+        for i in range(5):
+            opt = QuestionOption(question=q, option='option {}'.format(i+1))
+            opt.save()
+        return q
 
     def create_voters(self, v):
         for i in range(100):
@@ -94,7 +72,6 @@ class VotingTestCase(BaseTestCase):
     def store_votes(self, v):
         voters = list(Census.objects.filter(voting_id=v.id))
         voter = voters.pop()
-
         clear = {}
         for opt in v.question.options.all():
             clear[opt.number] = 0
@@ -112,128 +89,204 @@ class VotingTestCase(BaseTestCase):
                 mods.post('store', json=data)
         return clear
 
-    def test_complete_voting(self):
-        v = self.create_voting()
-        self.create_voters(v)
-
-        v.create_pubkey()
-        v.start_date = timezone.now()
-        v.save()
-
-        clear = self.store_votes(v)
-
-        self.login()  # set token
-        v.tally_votes(self.token)
-
-        tally = v.tally
-        tally.sort()
-        tally = {k: len(list(x)) for k, x in itertools.groupby(tally)}
-
-        for q in v.question.options.all():
-            self.assertEqual(tally.get(q.number, 0), clear.get(q.number, 0))
-
-        for q in v.postproc:
-            self.assertEqual(tally.get(q["number"], 0), q["votes"])
-
     def test_create_voting_from_api(self):
         data = {'name': 'Example'}
         response = self.client.post('/voting/', data, format='json')
         self.assertEqual(response.status_code, 401)
-
         # login with user no admin
         self.login(user='noadmin')
         response = mods.post('voting', params=data, response=True)
         self.assertEqual(response.status_code, 403)
-
         # login with user admin
         self.login()
         response = mods.post('voting', params=data, response=True)
         self.assertEqual(response.status_code, 400)
 
-        data = {
-            'name': 'Example',
-            'desc': 'Description example',
-            'question': 'I want a ',
-            'question_opt': ['cat', 'dog', 'horse']
-        }
-
-        response = self.client.post('/voting/', data, format='json')
-        self.assertEqual(response.status_code, 201)
-
     def test_update_voting(self):
         voting = self.create_voting()
-
         data = {'action': 'start'}
-        #response = self.client.post('/voting/{}/'.format(voting.pk), data, format='json')
-        #self.assertEqual(response.status_code, 401)
-
+        response = self.client.post('/voting/{}/'.format(voting.pk), data, format='json')
+        self.assertEqual(response.status_code, 401)
         # login with user no admin
         self.login(user='noadmin')
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 403)
-
         # login with user admin
         self.login()
         data = {'action': 'bad'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
-
         # STATUS VOTING: not started
         for action in ['stop', 'tally']:
             data = {'action': action}
             response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
             self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), 'Voting is not started')
-
         data = {'action': 'start'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), 'Voting started')
-
         # STATUS VOTING: started
         data = {'action': 'start'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already started')
-
         data = {'action': 'tally'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting is not stopped')
-
         data = {'action': 'stop'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), 'Voting stopped')
-
         # STATUS VOTING: stopped
         data = {'action': 'start'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already started')
-
         data = {'action': 'stop'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already stopped')
-
         data = {'action': 'tally'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), 'Voting tallied')
-
         # STATUS VOTING: tallied
         data = {'action': 'start'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already started')
-
         data = {'action': 'stop'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already stopped')
-
         data = {'action': 'tally'}
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already tallied')
+
+    def test_create_onequestion_voting(self):
+        q1 = Question(desc='question1')
+        q1.save()
+        for i in range(5):
+            opt = QuestionOption(question=q1, option='option {}'.format(i+1))
+            opt.save()
+        v = Voting(name='test voting')
+        v.save()
+        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+                                          defaults={'me': True, 'name': 'test auth'})
+        a.save()
+        v.auths.add(a)
+        v.question.add(q1)
+        self.assertEqual(v.question.all().count(), 1)
+
+
+    def test_create_multiquestion_sino_voting(self):
+        q1 = Question(desc='question1')
+        q1.save()
+        for i in range(5):
+            opt = QuestionOption(question=q1, option='option {}'.format(i+1))
+            opt.save()
+        q2 = Question(desc='question si/no', sino=True)
+        q2.save()
+        v = Voting(name='test voting')
+        v.save()
+        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+                                          defaults={'me': True, 'name': 'test auth'})
+        a.save()
+        v.auths.add(a)
+        v.question.add(q1)
+        v.question.add(q2)
+        a = v.question.all().count() == 2
+        b = v.question.all()[1].sino == True
+        self.assertTrue(a,b)
+
+    def test_create_multiquestion_all_types_voting(self):
+        q1 = Question(desc='question1')
+        q1.save()
+        for i in range(5):
+            opt = QuestionOption(question=q1, option='option {}'.format(i+1))
+            opt.save()
+        q2 = Question(desc='preferences', preferences=True)
+        q2.save()
+        for i in range(5):
+            opt = QuestionOption(question=q2, option='option {}'.format(i+1))
+            opt.save()
+        q3 = Question(desc='question si/no', sino=True)
+        q3.save()
+        v = Voting(name='test voting')
+        v.save()
+        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+                                          defaults={'me': True, 'name': 'test auth'})
+        a.save()
+        v.auths.add(a)
+        v.question.add(q1)
+        v.question.add(q2)
+        v.question.add(q3)
+        a = v.question.all().count() == 3
+        b = v.question.all()[1].preferences == True
+        c = v.question.all()[2].sino == True
+        self.assertTrue(a and b and c)
+
+    def test_create_multiquestion_preferences_voting(self):
+        q1 = Question(desc='question1')
+        q1.save()
+        for i in range(5):
+            opt = QuestionOption(question=q1, option='option {}'.format(i+1))
+            opt.save()
+        q2 = Question(desc='preferences', preferences=True)
+        q2.save()
+        for i in range(5):
+            opt = QuestionOption(question=q2, option='option {}'.format(i+1))
+            opt.save()
+        v = Voting(name='test voting')
+        v.save()
+        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+                                          defaults={'me': True, 'name': 'test auth'})
+        a.save()
+        v.auths.add(a)
+        v.question.add(q1)
+        v.question.add(q2)
+        a = v.question.all().count() == 2
+        b = v.question.all()[1].preferences == True
+        self.assertTrue(a,b)
+
+    def test_deleting_question_from_voting_multiquestion(self):
+        q1 = Question(desc="test question1")
+        q1.save()
+        q2 = Question(desc="test question2")
+        q2.save()
+        QuestionOption(question=q1,option="option1")
+        QuestionOption(question=q1,option="option2")
+        QuestionOption(question=q2,option="option3")
+        QuestionOption(question=q2,option="option4")
+        v=Voting(name="Votacion")
+        v.save()
+        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+                                          defaults={'me': True, 'name': 'test auth'})
+        v.auths.add(a)
+        v.question.add(q1)
+        v.question.add(q2)
+        self.assertEquals(v.question.all().count(), 2)
+        v.question.remove(q2)
+        self.assertEquals(v.question.all().count(),1)
+
+    def test_adding_question_to_voting_multiquestion(self):
+        q1 = Question(desc="test question1")
+        q1.save()
+        q2 = Question(desc="test question2")
+        q2.save()
+        QuestionOption(question=q1,option="option1")
+        QuestionOption(question=q1,option="option2")
+        QuestionOption(question=q2,option="option3")
+        QuestionOption(question=q2,option="option4")
+        v=Voting(name="Votacion")
+        v.save()
+        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+                                          defaults={'me': True, 'name': 'test auth'})
+        v.auths.add(a)
+        v.question.add(q1)
+        self.assertEquals(v.question.all().count(), 1)
+        v.question.add(q2)
+        self.assertEquals(v.question.all().count(),2)
