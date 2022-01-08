@@ -62,11 +62,13 @@ def aux(request):
         return None
 
 def profile(request):
-    vid = aux(request)
     message1 = "No está censado en ninguna votación, no podrá acceder a votar"
     message2 = "Si desea acceder a la votación pulse en Acceder"
+    vid = aux(request)
     if vid:
-        return render(request,'registration/profile.html',{'message2':message2, 'votacion':vid})
+        v1 = vid[0]
+        del vid[0]
+        return render(request,'registration/profile.html',{'message2':message2, 'v1':v1, 'votacion':vid})
     else:
         return render(request,'registration/profile.html',{'message1':message1})
 

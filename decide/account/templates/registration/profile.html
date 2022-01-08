@@ -33,19 +33,22 @@
     <br>
 
     {% if message2 %}
-
+    <td>{{message2}}</td>
+        <div>
+          <input type="button" class="button_active" onclick="location.href='/account/mivotacion?parametro={{v1}}';" name="acceder" value="Acceder"/>
+        </div>
     {% for v in votacion %} 
         <tr>
-        <td>{{message2}}</td>
           {% csrf_token %}
         <div>
-          <a class = "fcc-btn" href = "/account/mivotacion?parametro={{v}}"> Acceder </a>
+          <input type="button" class="button_active" onclick="location.href='/account/mivotacion?parametro={{v}}';" value="Acceder"/>
         </div>
       </form> 
       <br>
       <br>
       </tr>
       {% endfor %}
+      
   
 
     {% else %}
