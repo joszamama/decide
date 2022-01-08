@@ -1,11 +1,13 @@
 import random
 import itertools
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
+from django.urls import reverse
 
 from base import mods
 from base.tests import BaseTestCase
@@ -180,7 +182,68 @@ class VotingModelTestCase(BaseTestCase):
         v.auths.add(a)
         v.question.add(q1)
         self.assertEqual(v.question.all().count(), 1)
+    
+    def create_question_sino(self):
 
+        q = Question(desc='test pregunta SiNo', sino=True)
+        q.save()
+
+        opt = QuestionOption(question=q)
+        opt.save()
+        
+        v = Voting(name='test votacion', desc='vamos a realizar una pregunta sino', question=q)
+        v.save()
+
+        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+                                          defaults={'me': True, 'name': 'test auth'})
+        a.save()
+        v.auths.add(a)
+
+        return v
+
+    def test_question_sino_validacion(self):
+        q = Question(desc='test pregunta SiNo con mas opciones', sino=True)
+        for i in range(5):
+            opt = QuestionOption(question=q, option='option {}'.format(i+1))
+            self.assertRaises(ValidationError, opt.clean)
+
+    def test_delete_question_sino(self):
+        q = Question.objects.create(
+            desc='pregunta sino',
+            sino=True,
+        )
+        url = reverse('delete_question', kwargs={'pk': q.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+
+    def test_voting_question_sino(self):
+        q = Question(desc='votacion pregunta sino', sino=True)
+        q.save()
+        v = Voting(name='test votacion con pregunta sino')
+        v.save()
+        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+                                          defaults={'me': True, 'name': 'test auth'})
+        a.save()
+        v.auths.add(a)
+        v.question.add(q)
+        self.assertEqual(v.question.all().count(), 1)
+
+    def test_convertir_questionvacia_sino(self):
+        q = Question(desc='pregunta sino', sino=False)
+        q.save()
+        self.assertTrue(q.sino == False)
+        q.sino=True
+        self.assertTrue(q.sino == True)
+
+    def test_convertir_questionconrespuesta_sinio(self):
+        q = Question(desc='pregunta sino', sino=False)
+        q.save()
+        opt = QuestionOption(question=q, number= '3', option='option 3')
+        opt.save()
+        self.assertTrue(q.sino == False)
+        q.sino=True
+        self.assertTrue(q.sino == True)
+        self.assertRaises(ValidationError, opt.clean)
 
     def test_create_multiquestion_sino_voting(self):
         q1 = Question(desc='question1')

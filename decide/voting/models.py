@@ -18,7 +18,8 @@ class Question(models.Model):
 
 @receiver(post_save, sender=Question)
 def sino(sender, instance, **kwargs):
-    if instance.sino==True and instance.options.all().count()==0:
+    options = instance.options.all() 
+    if instance.sino==True and instance.options.all().count()==0: 
         op1 = QuestionOption(question=instance, number=1, option="Si")
         op1.save()
         op2 = QuestionOption(question=instance, number=2, option="No") 
@@ -44,6 +45,11 @@ class QuestionOption(models.Model):
         
     def __str__(self): 
         return '{} ({})'.format(self.option, self.number) 
+    
+    def clean(self): 
+        if self.question.sino and not self.question.options.all().count()==2: 
+            raise ValidationError('This type of question must not have other options added by you.') 
+
 
 class Voting(models.Model):
     name = models.CharField(max_length=200)
