@@ -20,7 +20,7 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-class RegisterTestSelenium(LiveServerTestCase):
+class RegisterTestSelenium(LiveServerTestCase, BaseTestCase):
     def test_singup(self):
         selenium = webdriver.Chrome()
         selenium.get('http://localhost:8000/account/signup/')
@@ -31,13 +31,13 @@ class RegisterTestSelenium(LiveServerTestCase):
 
         userUser.send_keys('l')
         userEmail.send_keys('l@gmail.com')
-        userPass.send_keys('l',Keys.ENTER)
+        userPass.send_keys('galaroza',Keys.ENTER)
 
         time.sleep(5)
 
         assert 'correctamente' in selenium.page_source
     
-    def test_singup_user_registered(self):
+    def test_singup_registrado(self):
         selenium = webdriver.Chrome()
         selenium.get('http://localhost:8000/account/signup/')
 
@@ -47,13 +47,13 @@ class RegisterTestSelenium(LiveServerTestCase):
 
         userUser.send_keys('l')
         userEmail.send_keys('l@gmail.com')
-        userPass.send_keys('l',Keys.ENTER)
+        userPass.send_keys('galaroza',Keys.ENTER)
 
         time.sleep(5)
 
         assert 'ya ha sido registrado' in selenium.page_source
         
-    def test_signup_empty(self):
+    def test_singup_vacio(self):
         selenium = webdriver.Chrome()
         selenium.get('http://localhost:8000/account/signup/')
       
@@ -67,7 +67,7 @@ class RegisterTestSelenium(LiveServerTestCase):
 
         assert 'account/signup' in selenium.current_url    
 
-    def test_login_no_register(self):
+    def test_login_sin_registro(self):
         selenium = webdriver.Chrome()
         selenium.get('http://localhost:8000/account/login/')
 
@@ -77,7 +77,7 @@ class RegisterTestSelenium(LiveServerTestCase):
         userPass = selenium.find_element_by_name('password')
 
         userEmail.send_keys('l@gmail.com')
-        userPass.send_keys('l',Keys.ENTER)
+        userPass.send_keys('galaroza',Keys.ENTER)
 
         time.sleep(5)
 
@@ -98,3 +98,35 @@ class RegisterTestSelenium(LiveServerTestCase):
         login_data = dict(email='l@gmail.com', password='l', csrfmiddlewaretoken=csrftoken, next='/')
         r = client.post(URL, data=login_data, headers=dict(Referer=URL))
         self.assertEqual(r.status_code, 200)
+
+    def test_validation_email(self):
+        selenium = webdriver.Chrome()
+        selenium.get('http://localhost:8000/account/signup/')
+      
+        userUser = selenium.find_element_by_name('username')
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
+
+        userUser.send_keys('l')
+        userEmail.send_keys('l@gmail.com')
+        userPass.send_keys('galaroza',Keys.ENTER)
+
+        time.sleep(5)
+
+        assert 'account/signup' in selenium.current_url
+
+    def test_validation_password(self):
+        selenium = webdriver.Chrome()
+        selenium.get('http://localhost:8000/account/signup/')
+      
+        userUser = selenium.find_element_by_name('username')
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
+
+        userUser.send_keys('l')
+        userEmail.send_keys('l@gmail.com')
+        userPass.send_keys('g',Keys.ENTER)
+
+        time.sleep(10)
+
+        assert 'account/signup' in selenium.current_url
