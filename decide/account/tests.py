@@ -246,7 +246,7 @@ PASSWORD_GOOGLE = '#RxCNYkEwoGy' #Introducir contraseña de Google para las prue
 
 #         assert 'Contraseña incorrecta. Vuelve a intentarlo o selecciona "¿Has olvidado tu contraseña?" para cambiarla.' in selenium.page_source
 
-# class RegistroTestSelenium(LiveServerTestCase):
+# class AccesoVotacionProfileSelenium(LiveServerTestCase):
 #     #para hacer uso de los test debe crear una votación, censar un usuario
 #     #en ella y colocar sus credenciales
 #     def test_acceso_votacion(self):
