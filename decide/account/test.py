@@ -18,6 +18,9 @@ PASSWORD_TWITCH = '' #Introducir contraseña de Twitch para las pruebas
 USER_TWITTER = '' #Introducir usuario de Twitter para las pruebas
 PASSWORD_TWITTER = '' #Introducir contraseña de Twitter para las pruebas
 
+USER_GOOGLE = 'decide.99.mulhacen@gmail.com' #Introducir usuario de Google para las pruebas
+PASSWORD_GOOGLE = '#RxCNYkEwoGy' #Introducir contraseña de Google para las pruebas
+
 class LoginTestSelenium(LiveServerTestCase):
 
       def testLogin(self):
@@ -160,4 +163,79 @@ class LoginRSTestSelenium(LiveServerTestCase):                  #Estos tests deb
         time.sleep(3)
 
         assert (PROFILE_WEB in selenium.current_url) and (USER_TWITTER in selenium.page_source)
+    
+class LoginGoogleOAuthTestSelenium(LiveServerTestCase): 
 
+    def testAccederGoogle(self):
+        selenium = webdriver.Chrome()
+        selenium.get(BASEURL)
+            
+        acceptButton=selenium.find_element_by_id('details-button')
+        acceptButton.click()
+        time.sleep(2)
+            
+        goButton=selenium.find_element_by_id('proceed-link')
+        goButton.click()
+        time.sleep(2)
+
+        googleButton = selenium.find_element_by_name('googleButton')
+        googleButton.click()
+        time.sleep(2) 
+
+        username = selenium.find_element_by_id('identifierId')
+        username.send_keys(USER_GOOGLE,Keys.ENTER)
+        time.sleep(2) 
+
+        userPass = selenium.find_element_by_name('password')
+        userPass.send_keys(PASSWORD_GOOGLE,Keys.ENTER)
+        time.sleep(2) 
+
+        assert PROFILE_WEB in selenium.current_url
+
+    def testAccederGoogleWrongEmail(self):
+        selenium = webdriver.Chrome()
+        selenium.get(BASEURL)
+            
+        acceptButton=selenium.find_element_by_id('details-button')
+        acceptButton.click()
+        time.sleep(2)
+            
+        goButton=selenium.find_element_by_id('proceed-link')
+        goButton.click()
+        time.sleep(2)
+
+        googleButton = selenium.find_element_by_name('googleButton')
+        googleButton.click()
+        time.sleep(2) 
+
+        username = selenium.find_element_by_id('identifierId')
+        username.send_keys('error',Keys.ENTER)
+        time.sleep(2) 
+
+        assert 'No se ha podido encontrar tu cuenta de Google' in selenium.page_source
+
+    def testAccederGoogle(self):
+        selenium = webdriver.Chrome()
+        selenium.get(BASEURL)
+            
+        acceptButton=selenium.find_element_by_id('details-button')
+        acceptButton.click()
+        time.sleep(2)
+            
+        goButton=selenium.find_element_by_id('proceed-link')
+        goButton.click()
+        time.sleep(2)
+
+        googleButton = selenium.find_element_by_name('googleButton')
+        googleButton.click()
+        time.sleep(2) 
+
+        username = selenium.find_element_by_id('identifierId')
+        username.send_keys(USER_GOOGLE,Keys.ENTER)
+        time.sleep(2) 
+
+        userPass = selenium.find_element_by_name('password')
+        userPass.send_keys('error',Keys.ENTER)
+        time.sleep(2) 
+
+        assert 'Contraseña incorrecta. Vuelve a intentarlo o selecciona "¿Has olvidado tu contraseña?" para cambiarla.' in selenium.page_source
