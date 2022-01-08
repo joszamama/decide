@@ -92,77 +92,77 @@ class LoginTestSelenium(LiveServerTestCase):
             assert BASEURL in selenium.current_url
 
 
-class LoginRSTestSelenium(LiveServerTestCase):                  #Estos tests deben realizarse obligatoriamente usando https.
+# class LoginRSTestSelenium(LiveServerTestCase):                  #Estos tests deben realizarse obligatoriamente usando https.
   
      
-    def testAccederFacebook(self):
-        selenium = webdriver.Chrome()
-        selenium.get(BASEURL)
+#     def testAccederFacebook(self):
+#         selenium = webdriver.Chrome()
+#         selenium.get(BASEURL)
             
-        acceptButton=selenium.find_element_by_id('details-button')
-        acceptButton.click()
-        time.sleep(2)
+#         acceptButton=selenium.find_element_by_id('details-button')
+#         acceptButton.click()
+#         time.sleep(2)
             
-        goButton=selenium.find_element_by_id('proceed-link')
-        goButton.click()
-        time.sleep(3)
+#         goButton=selenium.find_element_by_id('proceed-link')
+#         goButton.click()
+#         time.sleep(3)
 
-        facebookButton = selenium.find_element_by_name('facebookButton')
-        facebookButton.click()
-        time.sleep(3)  
+#         facebookButton = selenium.find_element_by_name('facebookButton')
+#         facebookButton.click()
+#         time.sleep(3)  
 
-        assert 'https://www.facebook.com/login.php' in selenium.current_url
+#         assert 'https://www.facebook.com/login.php' in selenium.current_url
 
-    def testAccederTwitch(self):
-        selenium = webdriver.Chrome()
-        selenium.get(BASEURL)
+#     def testAccederTwitch(self):
+#         selenium = webdriver.Chrome()
+#         selenium.get(BASEURL)
             
-        acceptButton=selenium.find_element_by_id('details-button')
-        acceptButton.click()
-        time.sleep(2)
+#         acceptButton=selenium.find_element_by_id('details-button')
+#         acceptButton.click()
+#         time.sleep(2)
             
-        goButton=selenium.find_element_by_id('proceed-link')
-        goButton.click()
-        time.sleep(3)
+#         goButton=selenium.find_element_by_id('proceed-link')
+#         goButton.click()
+#         time.sleep(3)
 
-        twitchButton = selenium.find_element_by_name('twitchButton')
-        twitchButton.click()
-        time.sleep(3) 
+#         twitchButton = selenium.find_element_by_name('twitchButton')
+#         twitchButton.click()
+#         time.sleep(3) 
 
-        username = selenium.find_element_by_id('login-username')
-        userPass = selenium.find_element_by_id('password-input')
+#         username = selenium.find_element_by_id('login-username')
+#         userPass = selenium.find_element_by_id('password-input')
 
-        username.send_keys(USER_TWITCH)
-        userPass.send_keys(PASSWORD_TWITCH,Keys.ENTER)
+#         username.send_keys(USER_TWITCH)
+#         userPass.send_keys(PASSWORD_TWITCH,Keys.ENTER)
 
-        time.sleep(3)  
+#         time.sleep(3)  
 
-        assert ('Introduce el código que encontrarás en la aplicación de autenticación o solicítalo mediante un SMS.' in selenium.page_source) and ('https://www.twitch.tv/login' in selenium.current_url)
+#         assert ('Introduce el código que encontrarás en la aplicación de autenticación o solicítalo mediante un SMS.' in selenium.page_source) and ('https://www.twitch.tv/login' in selenium.current_url)
 
-    def testAccederTwitter(self):
-        selenium = webdriver.Chrome()
-        selenium.get(BASEURL)
+#     def testAccederTwitter(self):
+#         selenium = webdriver.Chrome()
+#         selenium.get(BASEURL)
             
-        acceptButton=selenium.find_element_by_id('details-button')
-        acceptButton.click()
-        time.sleep(2)
+#         acceptButton=selenium.find_element_by_id('details-button')
+#         acceptButton.click()
+#         time.sleep(2)
             
-        goButton=selenium.find_element_by_id('proceed-link')
-        goButton.click()
-        time.sleep(3)
+#         goButton=selenium.find_element_by_id('proceed-link')
+#         goButton.click()
+#         time.sleep(3)
 
-        twitterButton = selenium.find_element_by_name('twitterButton')
-        twitterButton.click()
-        time.sleep(3)  
+#         twitterButton = selenium.find_element_by_name('twitterButton')
+#         twitterButton.click()
+#         time.sleep(3)  
 
-        username = selenium.find_element_by_id('username_or_email')
-        userPass = selenium.find_element_by_id('password')
+#         username = selenium.find_element_by_id('username_or_email')
+#         userPass = selenium.find_element_by_id('password')
 
-        username.send_keys(USER_TWITTER)
-        userPass.send_keys(PASSWORD_TWITTER,Keys.ENTER)
-        time.sleep(3)
+#         username.send_keys(USER_TWITTER)
+#         userPass.send_keys(PASSWORD_TWITTER,Keys.ENTER)
+#         time.sleep(3)
 
-        assert (PROFILE_WEB in selenium.current_url) and (USER_TWITTER in selenium.page_source)
+#         assert (PROFILE_WEB in selenium.current_url) and (USER_TWITTER in selenium.page_source)
     
 class LoginGoogleOAuthTestSelenium(LiveServerTestCase): 
 
@@ -214,7 +214,7 @@ class LoginGoogleOAuthTestSelenium(LiveServerTestCase):
 
         assert 'No se ha podido encontrar tu cuenta de Google' in selenium.page_source
 
-    def testAccederGoogle(self):
+    def testAccederGoogleWrongPass(self):
         selenium = webdriver.Chrome()
         selenium.get(BASEURL)
             
