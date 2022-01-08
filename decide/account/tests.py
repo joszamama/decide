@@ -21,7 +21,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 class RegisterTestSelenium(LiveServerTestCase):
-    def test_add_user(self):
+    def test_singup(self):
         selenium = webdriver.Chrome()
         selenium.get('http://localhost:8000/account/signup/')
 
@@ -37,7 +37,7 @@ class RegisterTestSelenium(LiveServerTestCase):
 
         assert 'correctamente' in selenium.page_source
     
-    def test_add_user_registered(self):
+    def test_singup_user_registered(self):
         selenium = webdriver.Chrome()
         selenium.get('http://localhost:8000/account/signup/')
 
@@ -52,9 +52,39 @@ class RegisterTestSelenium(LiveServerTestCase):
         time.sleep(5)
 
         assert 'ya ha sido registrado' in selenium.page_source
+        
+    def test_signup_empty(self):
+        selenium = webdriver.Chrome()
+        selenium.get('http://localhost:8000/account/signup/')
+      
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
 
-class LoginTestUnit(BaseTestCase):
-    def test_login(self):
+        userEmail.send_keys('')
+        userPass.send_keys('',Keys.ENTER)
+
+        time.sleep(5)
+
+        assert 'account/signup' in selenium.current_url    
+
+    def test_login_no_register(self):
+        selenium = webdriver.Chrome()
+        selenium.get('http://localhost:8000/account/login/')
+
+        time.sleep(5)
+      
+        userEmail = selenium.find_element_by_name('email')
+        userPass = selenium.find_element_by_name('password')
+
+        userEmail.send_keys('l@gmail.com')
+        userPass.send_keys('l',Keys.ENTER)
+
+        time.sleep(5)
+
+        assert 'account/login' in selenium.current_url
+
+
+    def test_u_login(self):
         URL = 'http://localhost:8000/account/login/'
 
         client = requests.session()
