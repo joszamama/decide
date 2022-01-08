@@ -11,6 +11,12 @@
     padding: 40px;
   }
 
+  .fcc-btn {
+  background-color:   #17202a ;
+  color: white;
+  text-decoration: none;
+}
+
 </style>
 <h1>Mi cuenta</h1>
 <br><br>
@@ -28,15 +34,19 @@
 
     {% if message2 %}
 
-
-    <td>{{message2}}</td>
-    <form action="/account/mivotacion">
-      {% csrf_token %}
-      <div>
-          <input type="submit" value = "Acceder" />
-          <input type="hidden" name="next" value="{{ next }}" />
+    {% for v in votacion %} 
+        <tr>
+        <td>{{message2}}</td>
+          {% csrf_token %}
+        <div>
+          <a class = "fcc-btn" href = "/account/mivotacion?parametro={{v}}"> Acceder </a>
         </div>
-    </form> 
+      </form> 
+      <br>
+      <br>
+      </tr>
+      {% endfor %}
+  
 
     {% else %}
     <td>{{message1}}</td>

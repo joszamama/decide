@@ -52,9 +52,12 @@ def aux(request):
     user = request.user
     ls = Census.objects.filter(voter_id=user.id).values_list('voting_id')
     if ls:
+        v = list()
         votaciones = ls.all()
-        v = list(votaciones[0])
-        return str(v)
+        votaciones = list(votaciones)
+        for votacion in votaciones:
+            v.append(votacion[0])
+        return v
     else:
         return None
 
@@ -63,14 +66,15 @@ def profile(request):
     message1 = "No está censado en ninguna votación, no podrá acceder a votar"
     message2 = "Si desea acceder a la votación pulse en Acceder"
     if vid:
-        return render(request,'registration/profile.html',{'message2':message2, 'id_votacion':vid})
+        return render(request,'registration/profile.html',{'message2':message2, 'votacion':vid})
     else:
         return render(request,'registration/profile.html',{'message1':message1})
 
 
 def misvotaciones(request):
-    vid = aux(request)
-    return HttpResponseRedirect('/booth/'+vid)
+    v = request.GET.get("parametro")
+    
+    return HttpResponseRedirect('/booth/'+v)
 
 
 def updateUser(request):
