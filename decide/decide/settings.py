@@ -151,9 +151,9 @@ WSGI_APPLICATION = 'decide.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'decide3',
-        'USER': 'decide3',
-        'PASSWORD': 'decide3',
+        'NAME': 'decide',
+        'USER': 'decide',
+        'PASSWORD': 'decide',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -223,9 +223,5 @@ if os.path.exists("config.jsonnet"):
 
 
 INSTALLED_APPS = INSTALLED_APPS + MODULES
-
-APIS = {}
-
-BASEURL = 'https://decide-mulhacen-3.herokuapp.com'
 
 django_heroku.settings(locals())
