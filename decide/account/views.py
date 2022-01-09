@@ -9,7 +9,7 @@ from account.forms import UserForm
 
 from django.db import models
 from django.contrib.auth.models import User
-
+from census.models import Census
 
 def signup(request):
     form = UserForm()
@@ -38,7 +38,7 @@ def view_login(request):
         form = UserForm(request.POST)
         email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, email=email, password=password) 
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request,user)
             return HttpResponseRedirect('/account/profile')
@@ -48,9 +48,35 @@ def view_login(request):
     else:
         return render(request,'registration/login.html',{'form':form})
 
+def aux(request):
+    user = request.user
+    ls = Census.objects.filter(voter_id=user.id).values_list('voting_id')
+    if ls:
+        v = list()
+        votaciones = ls.all()
+        votaciones = list(votaciones)
+        for votacion in votaciones:
+            v.append(votacion[0])
+        return v
+    else:
+        return None
 
 def profile(request):
-    return render(request,'registration/profile.html')
+    message1 = "No está censado en ninguna votación, no podrá acceder a votar"
+    message2 = "Si desea acceder a la votación pulse en Acceder"
+    vid = aux(request)
+    if vid:
+        v1 = vid[0]
+        del vid[0]
+        return render(request,'registration/profile.html',{'message2':message2, 'v1':v1, 'votacion':vid})
+    else:
+        return render(request,'registration/profile.html',{'message1':message1})
+
+
+def misvotaciones(request):
+    v = request.GET.get("parametro")
+    
+    return HttpResponseRedirect('/booth/'+v)
 
 
 def updateUser(request):
@@ -69,7 +95,8 @@ def updateUser(request):
         user.set_password(password)
         user.save()
         login(request,user, backend='django.contrib.auth.backends.ModelBackend')
-        return render(request,'registration/profile.html',{"form":form})
+        message = 'Datos cambiados correctamente, puede volver al perfil'
+        return render(request,'registration/update.html',{"form":form, "message": message})
         
 
     else:
