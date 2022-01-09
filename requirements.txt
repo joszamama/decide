@@ -11,8 +11,3 @@ django-nose==1.4.6
 jsonnet==0.12.1
 django-heroku
 gunicorn
-<<<<<<< HEAD
-=======
-django-sslserver
-social-auth-app-django
->>>>>>> e953f15c9052be882a7dd3a4c65ba731e5cc8732
