@@ -13,17 +13,24 @@ class Question(models.Model):
     preferences = models.BooleanField(default=False,verbose_name="Preferences", help_text="Check for creating a preference question")
     sino = models.BooleanField(default=False, help_text="Marcala si quieres que las respuestas genericas sean Si/No. No añadir mas respuesta.")
 
+
+    def clean(self):
+        if self.sino and self.preferences:
+            raise ValidationError('You can not make a question of the type yes/no and preferences at the same time')
+
     def __str__(self):
         return self.desc
 
+    
+
 @receiver(post_save, sender=Question)
 def sino(sender, instance, **kwargs):
-    if instance.sino==True and instance.options.all().count()==0:
+    options = instance.options.all() 
+    if instance.sino==True and instance.options.all().count()==0: 
         op1 = QuestionOption(question=instance, number=1, option="Si")
         op1.save()
         op2 = QuestionOption(question=instance, number=2, option="No") 
         op2.save()
-
 
 class QuestionOption(models.Model): 
     question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE) 
@@ -44,6 +51,11 @@ class QuestionOption(models.Model):
         
     def __str__(self): 
         return '{} ({})'.format(self.option, self.number) 
+    
+    def clean(self): 
+        if self.question.sino and not self.question.options.all().count()==2: 
+            raise ValidationError('This type of question must not have other options added by you.') 
+
 
 class Voting(models.Model):
     name = models.CharField(max_length=200)
