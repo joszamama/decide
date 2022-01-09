@@ -142,7 +142,7 @@ class Voting(models.Model):
                 opts.append({
                     'option': opt.option,
                     'number': opt.number,
-                    'votes': votes
+                    'votes': votes,
                     'tipo': self.tipo
                 })
 
