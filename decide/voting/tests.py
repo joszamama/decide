@@ -167,6 +167,18 @@ class VotingModelTestCase(BaseTestCase):
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already tallied')
+        
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'tipo': 'HUNTINGTONHILL',
+            'numEscanos': '10',
+            'question': 'I am a ',
+            'question_opt': ['cow', 'cat', 'fish']
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 201)        
 
     def test_create_onequestion_voting(self):
         q1 = Question(desc='question1')
@@ -417,3 +429,4 @@ class VotingModelTestCase(BaseTestCase):
         self.assertTrue(v.question.count() == 1)
         v.question.remove(q)
         self.assertTrue(v.question.count() == 0)
+

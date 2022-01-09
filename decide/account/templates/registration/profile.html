@@ -1,0 +1,23 @@
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+  integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+  crossorigin="anonymous">
+
+{% block content %}
+    <h2>Prueba</h2>
+    <td>{{user.username}}</td>
+    <td>{{user.login}}</td>
+    <br>
+    <td>{{user.email}}</td>
+    <form action="/account/update">
+
+        {% csrf_token %}
+        
+            <div>
+                <input type="submit" value = "Actualizar datos" />
+                <input type="hidden" name="next" value="{{ next }}" />
+              </div>
+        </form> 
+{% endblock %}
+<a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
