@@ -129,7 +129,7 @@ class VotingTestCase(BaseTestCase):
         }
 
         response = self.client.post('/voting/', data, format='json')
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 400)
 
     def test_update_voting(self):
         voting = self.create_voting()
@@ -219,5 +219,5 @@ class VotingTestCase(BaseTestCase):
         }
 
         response = self.client.post('/voting/', data, format='json')
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 400)
         
