@@ -14,5 +14,3 @@ gunicorn
 django-sslserver
 selenium
 social-auth-app-django
-
-
