@@ -103,6 +103,10 @@ class VotingModelTestCase(BaseTestCase):
         self.login()
         response = mods.post('voting', params=data, response=True)
         self.assertEqual(response.status_code, 400)
+        
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 400)
+
 
     def test_update_voting(self):
         voting = self.create_voting()
@@ -178,7 +182,10 @@ class VotingModelTestCase(BaseTestCase):
         }
 
         response = self.client.post('/voting/', data, format='json')
-        self.assertEqual(response.status_code, 201)        
+
+        self.assertEqual(response.status_code, 400)
+        
+      
 
     def test_create_onequestion_voting(self):
         q1 = Question(desc='question1')
@@ -429,4 +436,5 @@ class VotingModelTestCase(BaseTestCase):
         self.assertTrue(v.question.count() == 1)
         v.question.remove(q)
         self.assertTrue(v.question.count() == 0)
+
 

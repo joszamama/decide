@@ -29,7 +29,9 @@ class VotingView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         self.permission_classes = (UserIsStaff,)
         self.check_permissions(request)
-        for data in ['name', 'desc', 'question']:
+
+        for data in ['name', 'desc', 'question', 'question_opt','tipo', 'numEscanyos']:
+
             if not data in request.data:
                 return Response({}, status=status.HTTP_400_BAD_REQUEST)
         
